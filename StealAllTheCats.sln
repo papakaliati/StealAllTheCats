@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StealAllTheCats", "src\StealAllTheCats.csproj", "{31BD4160-D5B1-3E2C-B1AE-7C4A920FE3C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StealAllTheCats.tests", "StealAllTheCats.tests\StealAllTheCats.tests.csproj", "{7342C402-3FCF-4177-9745-22DD1EE04851}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31BD4160-D5B1-3E2C-B1AE-7C4A920FE3C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31BD4160-D5B1-3E2C-B1AE-7C4A920FE3C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31BD4160-D5B1-3E2C-B1AE-7C4A920FE3C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31BD4160-D5B1-3E2C-B1AE-7C4A920FE3C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7342C402-3FCF-4177-9745-22DD1EE04851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7342C402-3FCF-4177-9745-22DD1EE04851}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7342C402-3FCF-4177-9745-22DD1EE04851}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7342C402-3FCF-4177-9745-22DD1EE04851}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7176F477-64A7-4A1B-8188-E7F3238598E9}
+	EndGlobalSection
+EndGlobal
