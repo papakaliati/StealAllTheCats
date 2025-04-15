@@ -1,5 +1,4 @@
-﻿using Hangfire;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StealAllTheCats.Api.Features.Cats.Shared;
 using Swashbuckle.AspNetCore.Annotations;
 

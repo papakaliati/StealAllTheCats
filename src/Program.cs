@@ -11,6 +11,8 @@ using StealAllTheCats.Infrastructure.Data.Repositories;
 using StealAllTheCats.Api.Features.Cats.Fetch;
 using StealAllTheCats.Api.Features.Cats.GetbyID;
 using StealAllTheCats.Api.Features.Cats.ListCats;
+using Hangfire.MemoryStorage;
+using Hangfire.SqlServer;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +32,13 @@ builder.Services.AddHangfire(config => config
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+    //.UseMemoryStorage()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"),
+                         new SqlServerStorageOptions
+                         {
+                             PrepareSchemaIfNecessary = true
+                         })
+    );
 builder.Services.AddHangfireServer();
 
 // --- DEPENDENCY INJECTION ---
@@ -69,8 +77,8 @@ builder.Services.AddRefitClient<ICatApiClient>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri("https://api.thecatapi.com");
-        c.DefaultRequestHeaders.Add("x-api-key", builder.Configuration["CatApi:ApiKey"] ?? 
-                throw new InvalidConfigurationException("CatApi:ApiKey in configuration is missing or invalid"));
+        c.DefaultRequestHeaders.Add("x-api-key", builder.Configuration["CATAPI_APIKEY"] ?? 
+                throw new InvalidConfigurationException("CATAPI_APIKEY in configuration is missing or invalid"));
     })
     .AddPolicyHandler(PollyPolicies.GetRetryPolicy())
     .AddPolicyHandler(PollyPolicies.GetTimeoutPolicy());
@@ -78,16 +86,21 @@ builder.Services.AddRefitClient<ICatApiClient>()
 WebApplication app = builder.Build();
 
 // --- MIDDLEWARE ---
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseStatusCodePages();
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapHangfireDashboard();
+//app.UseHttpsRedirection();
+//app.UseHangfireDashboard("/hangfire", 
+//                         new DashboardOptions {
+//                             Authorization = []
+//                         });
+app.MapHangfireDashboard(new DashboardOptions {
+                             Authorization = []
+                         });
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();  // Add custom exception handling middleware
