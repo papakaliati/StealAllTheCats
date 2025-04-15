@@ -1,4 +1,5 @@
 An .env file is needed with following data:
+The values themselves are not that important, since we use and set them during docker-compose, only CATAPI_TOKEN is needed to be acquired from 
 
 CATAPI_TOKEN=... // CatAPI_Token
 SA_PASSWORD=... // SQL Database Password
@@ -28,4 +29,6 @@ If it were to implement it, I would use JWT header based.
 
 ## https://thecatapi.com/ API Token
 Without an API token, always 10 results are returned (query params are disabled).
-I currently force existence of API Token, that enforcement can be disabled at line 99 of Program.cs.
+I currently force existence of API Token, that enforcement can be disabled at [line 99 of Program.cs](https://github.com/papakaliati/StealAllTheCats/blob/b577d63f83a9c4f0cfdd85f86abb422d23833010/src/Program.cs#L99)
+
+[The Cat API Tokens](https://thecatapi.com/#pricing) are free for up to 10.000 requests per month 
