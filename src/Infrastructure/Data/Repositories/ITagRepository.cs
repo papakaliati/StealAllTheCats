@@ -1,4 +1,4 @@
-﻿namespace StealAllTheCats.Infrastructure.Repositories;
+﻿namespace StealAllTheCats.Infrastructure.Data.Repositories;
 
 public interface ITagRepository
 {

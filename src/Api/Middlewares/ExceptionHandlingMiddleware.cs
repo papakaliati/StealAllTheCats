@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace StealAllTheCats.Middlewares;
+namespace StealAllTheCats.Api.Middlewares;
 
 public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
 {

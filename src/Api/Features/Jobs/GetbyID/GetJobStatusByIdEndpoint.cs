@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace StealAllTheCats.Controllers;
+namespace StealAllTheCats.Api.Controllers;
 
 [ApiController]
 [Route("api/jobs")]
 [Produces("application/json")]
-public class JobsController : ControllerBase
+public class GetJobStatusByI : ControllerBase
 {
     /// <summary>
     /// Retrieves the status of a specific job by its ID.
@@ -15,7 +15,7 @@ public class JobsController : ControllerBase
     /// <param name="id">The ID of the job to retrieve the status for.</param>
     /// <returns>The status of the job, or "NotFound" if the job does not exist.</returns>
     [HttpGet("{id}")]
-    [SwaggerOperation(Summary = "Get job status", Description = "Retrieves the status of a specific job by its ID.")]
+    [SwaggerOperation(Tags = ["Jobs"], Summary = "Get job status", Description = "Retrieves the status of a specific job by its ID.")]
     [SwaggerResponse(StatusCodes.Status200OK, "The status of the job.", typeof(object))]
     public IActionResult GetStatus(string id)
     {

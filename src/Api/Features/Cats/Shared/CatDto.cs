@@ -1,4 +1,4 @@
-﻿namespace StealAllTheCats.DTOs;
+﻿namespace StealAllTheCats.Api.Features.Cats.Shared;
 
 public record CatDto(int Id,
                      string CatId,

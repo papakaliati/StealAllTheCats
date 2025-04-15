@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace StealAllTheCats.Infrastructure.Repositories;
+namespace StealAllTheCats.Infrastructure.Data.Repositories;
 
 public class TagRepository(ApplicationDbContext context, ILogger<CatRepository> logger) : ITagRepository
 {

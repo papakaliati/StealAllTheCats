@@ -1,65 +1,16 @@
 ﻿using Hangfire;
-using Microsoft.EntityFrameworkCore;
-using StealAllTheCats.DTOs;
 using StealAllTheCats.External.TheCatApi.Models;
-using StealAllTheCats.Infrastructure.Repositories;
+using StealAllTheCats.Infrastructure.Data.Repositories;
 using StealAllTheCats.Integrations.TheCatApi;
 
-namespace StealAllTheCats.Services;
+namespace StealAllTheCats.Api.Features.Cats.Fetch;
 
-public class CatService(ICatApiClient catApiClient,
-                        ICatRepository catRepository,
-                        ITagRepository tagRepository,
-                        IFileDownloader fileDownloader, 
-                        IBackgroundJobClient backgroundJobClient) : ICatService
+public class FetchCatsService(ICatApiClient catApiClient,
+                              ICatRepository catRepository,
+                              ITagRepository tagRepository,
+                              IFileDownloader fileDownloader, 
+                              IBackgroundJobClient backgroundJobClient) : IFetchCatsService
 {
-    public async Task<CatDto?> GetCatByIdAsync(string id)
-    {
-        CatEntity cat = await catRepository.GetCatAsync(id);
-        if (cat == null)
-            return null;
-
-        return new CatDto(
-            cat.Id,
-            cat.CatId,
-            cat.Width,
-            cat.Height,
-            cat.Image,
-            [.. cat.CatTags.Select(ct => ct.Tag.Name)],
-            cat.Created
-        );
-    }
-
-    public async Task<PaginatedList<CatDto>> GetCatsAsync(string? tag, int page, int pageSize)
-    {
-        IQueryable<CatEntity> query = catRepository.GetCatsAsync();
-
-        if (!string.IsNullOrWhiteSpace(tag))
-        {
-            query = query.Where(c => c.CatTags.Any(ct => ct.Tag.Name.ToLower().Equals(tag)));
-        }
-
-        int totalCount = await query.CountAsync();
-
-        List<CatDto> items = await query
-            .OrderByDescending(c => c.Created)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(c => new CatDto(
-                c.Id,
-                c.CatId,
-                c.Width,
-                c.Height,
-                c.Image,
-                c.CatTags.Select(ct => ct.Tag.Name).ToList(),
-                c.Created
-            ))
-            .ToListAsync();
-
-        return new PaginatedList<CatDto>(items, totalCount);
-    }
-
-
     public string EnqueueCatFetchJob()
     {
         string jobId = backgroundJobClient.Enqueue(() => FetchAndStoreCatsAsync());
@@ -138,12 +89,14 @@ public class CatService(ICatApiClient catApiClient,
         // Run multiple iterations to get more unique cats, stop at 5 runs.
         int maxIterations = 5;
         int run = 0;
-        while (apiCats.Count < 25 || maxIterations <= run)
+        while (apiCats.Count < 25)
         {
             apiCats.AddRange(await catApiClient.GetCatsAsync(limit: 10, has_breeds: 1));
 
             apiCats = [.. apiCats.DistinctBy(c => c.Id).Take(25)];
             run++;
+            if (run >= maxIterations)
+                break;
         }
 
         return apiCats;

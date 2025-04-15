@@ -4,12 +4,13 @@ using Microsoft.IdentityModel.Protocols.Configuration;
 using Polly.Extensions.Http;
 using Polly;
 using Refit;
-using StealAllTheCats.Infrastructure.Repositories;
-using StealAllTheCats.Middlewares;
-using StealAllTheCats.Services;
 using StealAllTheCats.Integrations.TheCatApi;
 using System.Text.Json;
-using Microsoft.Data.SqlClient;
+using StealAllTheCats.Api.Middlewares;
+using StealAllTheCats.Infrastructure.Data.Repositories;
+using StealAllTheCats.Api.Features.Cats.Fetch;
+using StealAllTheCats.Api.Features.Cats.GetbyID;
+using StealAllTheCats.Api.Features.Cats.ListCats;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -42,9 +43,11 @@ builder.Services.AddScoped<ICatTagDBContext>(provider => provider.GetRequiredSer
 
 builder.Services.AddScoped<ICatRepository, CatRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
-
-builder.Services.AddScoped<ICatService, CatService>();
 builder.Services.AddScoped<IFileDownloader, FileDownloader>();
+
+builder.Services.AddScoped<IFetchCatsService, FetchCatsService>();
+builder.Services.AddScoped<IGetCatByIdService, GetCatByIdService>();
+builder.Services.AddScoped<IListCatsService, ListCatsService > ();
 
 // --- CONTROLLERS + SWAGGER ---
 builder.Services.AddControllers()
