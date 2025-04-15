@@ -103,19 +103,13 @@ builder.Services.AddRefitClient<ICatApiClient>()
 
 WebApplication app = builder.Build();
 
-// --- MIDDLEWARE ---
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseStatusCodePages();
 app.MapHangfireDashboard(new DashboardOptions {
                              Authorization = []
                          });
 app.MapControllers();
-
 app.UseMiddleware<ExceptionHandlingMiddleware>();  // Add custom exception handling middleware
 
 app.Run();

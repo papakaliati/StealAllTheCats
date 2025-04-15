@@ -3,7 +3,6 @@ using StealAllTheCats.Application.Interfaces;
 using StealAllTheCats.Infrastructure.Data.Repositories;
 using StealAllTheCats.Integrations.TheCatApi;
 using StealAllTheCats.Integrations.TheCatApi.Models;
-using System;
 
 namespace StealAllTheCats.Api.Features.Cats.Fetch;
 
@@ -86,7 +85,7 @@ public class FetchCatsService(ICatApiClient catApiClient,
         await catRepository.SaveChangesAsync();
     }
 
-    public async Task<List<BaseCatApiResponse>> GetCatsFromTheCatAPI()
+    private async Task<List<BaseCatApiResponse>> GetCatsFromTheCatAPI()
     {
         List<BaseCatApiResponse> apiCats = await catApiClient.GetCatsAsync(limit: 25, has_breeds: 1);
 

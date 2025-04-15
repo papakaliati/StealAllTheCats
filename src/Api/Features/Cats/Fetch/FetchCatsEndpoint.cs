@@ -17,7 +17,7 @@ public class FetchCatsEndpoint(IFetchCatsService fetchCatsService) : ControllerB
     /// <returns>The ID of the enqueued job.</returns>
     [HttpPost("fetch")]
     [SwaggerOperation(Tags = ["Cats"], Summary = "Enqueue a job to fetch cats", Description = "Enqueues a job to fetch cats from an external source.")]
-    [SwaggerResponse(StatusCodes.Status200OK, "The ID of the enqueued job.", typeof(FetchCatchResult))]
+    [SwaggerResponse(StatusCodes.Status200OK, "The ID of the enqueued job. You inquire it's state using the Get job status endpoint (/api/jobs/{id}).", typeof(FetchCatchResult))]
     public IActionResult FetchCats()
     {
         string jobId = fetchCatsService.EnqueueCatFetchJob();

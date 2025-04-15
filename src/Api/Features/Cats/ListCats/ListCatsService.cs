@@ -13,11 +13,11 @@ public class ListCatsService(ICatRepository catRepository) : IListCatsService
 
         if (!string.IsNullOrWhiteSpace(tag))
         {
-            query = query.Where(c => c.CatTags.Any(ct => ct.Tag.Name.ToLower().Equals(tag)));
+            query = query.Where(c => c.CatTags.Any(ct => ct.Tag.Name.Equals(tag)));
         }
 
         int totalCount = await query.CountAsync();
-    
+
         List<CatDto> items = await query
             .OrderByDescending(c => c.Created)
             .Skip((page - 1) * pageSize)
@@ -25,9 +25,9 @@ public class ListCatsService(ICatRepository catRepository) : IListCatsService
             .Select(c => new CatDto(
                 c.Id,
                 c.CatId,
-                c.Width,
+                c.Width, 
                 c.Height,
-                $"http://localhost:9001/browser/{Config.BUCKET_NAME}/{c.Image}",
+                $"{Config.MINIO_DASHBOARD_URL}{Config.BUCKET_NAME}/{c.Image}",
                 c.CatTags.Select(ct => ct.Tag.Name).ToList(),
                 c.Created
             ))
