@@ -6,5 +6,5 @@ public interface ICatRepository
     Task AddCatAsync(CatEntity cat);
     Task SaveChangesAsync();
     IQueryable<CatEntity> GetCatsAsync();
-    Task<CatEntity> GetCatAsync(string catId);
+    Task<CatEntity?> GetCatAsync(string catId);
 }

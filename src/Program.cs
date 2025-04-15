@@ -11,8 +11,10 @@ using StealAllTheCats.Infrastructure.Data.Repositories;
 using StealAllTheCats.Api.Features.Cats.Fetch;
 using StealAllTheCats.Api.Features.Cats.GetbyID;
 using StealAllTheCats.Api.Features.Cats.ListCats;
-using Hangfire.MemoryStorage;
 using Hangfire.SqlServer;
+using StealAllTheCats.Application.Interfaces;
+using StealAllTheCats.Infrastructure.Minio;
+using Minio;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -53,9 +55,25 @@ builder.Services.AddScoped<ICatRepository, CatRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IFileDownloader, FileDownloader>();
 
+builder.Services.AddSingleton<IMinioClient>(serviceProvider =>  
+{
+    var MINIO_ROOT_USER = builder.Configuration["MINIO_ROOT_USER"];
+    var MINIO_ROOT_PASSWORD = builder.Configuration["MINIO_ROOT_PASSWORD"];
+
+    IMinioClient minio = new MinioClient()
+        .WithEndpoint("minio:9000")
+        .WithCredentials(MINIO_ROOT_USER, MINIO_ROOT_PASSWORD)
+        .WithSSL(false)
+        .Build();
+
+    return minio;
+});
+
 builder.Services.AddScoped<IFetchCatsService, FetchCatsService>();
 builder.Services.AddScoped<IGetCatByIdService, GetCatByIdService>();
-builder.Services.AddScoped<IListCatsService, ListCatsService > ();
+builder.Services.AddScoped<IListCatsService, ListCatsService> ();
+builder.Services.AddScoped<IFileStorageService, MinioFileStorageClient>();
+
 
 // --- CONTROLLERS + SWAGGER ---
 builder.Services.AddControllers()
@@ -86,18 +104,13 @@ builder.Services.AddRefitClient<ICatApiClient>()
 WebApplication app = builder.Build();
 
 // --- MIDDLEWARE ---
-//if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseStatusCodePages();
-//app.UseHttpsRedirection();
-//app.UseHangfireDashboard("/hangfire", 
-//                         new DashboardOptions {
-//                             Authorization = []
-//                         });
 app.MapHangfireDashboard(new DashboardOptions {
                              Authorization = []
                          });
@@ -113,9 +126,9 @@ public static class PollyPolicies
     public static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy() =>
         HttpPolicyExtensions
             .HandleTransientHttpError()
-            .WaitAndRetryAsync(3, retryAttempt =>
+            .WaitAndRetryAsync(5, retryAttempt =>
                 TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
     public static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() =>
-        Policy.TimeoutAsync<HttpResponseMessage>(10); // 10 seconds
+        Policy.TimeoutAsync<HttpResponseMessage>(15);
 }

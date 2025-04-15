@@ -4,6 +4,6 @@ public record CatDto(int Id,
                      string CatId,
                      int Width,
                      int Height,
-                     byte[] Image,
+                     string Image,
                      List<string> Tags,
                      DateTime Created);

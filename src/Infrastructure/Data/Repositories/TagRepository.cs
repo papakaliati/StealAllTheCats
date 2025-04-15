@@ -2,7 +2,7 @@
 
 namespace StealAllTheCats.Infrastructure.Data.Repositories;
 
-public class TagRepository(ApplicationDbContext context, ILogger<CatRepository> logger) : ITagRepository
+public class TagRepository(ApplicationDbContext context) : ITagRepository
 {
     public async Task<TagEntity> FindTagByNameAsync(string name) 
         => await context.Tags.FirstOrDefaultAsync(c => c.Name == name);
@@ -26,9 +26,9 @@ public class TagRepository(ApplicationDbContext context, ILogger<CatRepository> 
 
     public IQueryable<CatEntity> Query() => context.Cats.Include(c => c.CatTags).ThenInclude(ct => ct.Tag);
 
-    public async Task<CatEntity> GetCatAsync(string catId)
+    public async Task<CatEntity?> GetCatAsync(string catId)
     {
-        CatEntity catEntity = await context.Cats?.Include(c => c.CatTags).ThenInclude(ct => ct.Tag).FirstOrDefaultAsync(c => c.CatId == catId);
+        CatEntity catEntity = await context.Cats?.Include(c => c.CatTags).ThenInclude(ct => ct.Tag).FirstOrDefaultAsync(c => c.CatId == catId); 
 
         return catEntity;
     }

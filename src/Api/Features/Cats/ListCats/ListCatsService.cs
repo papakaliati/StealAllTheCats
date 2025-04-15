@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StealAllTheCats.Api.Features.Cats.Shared;
+using StealAllTheCats.Application;
 using StealAllTheCats.Infrastructure.Data.Repositories;
 
 namespace StealAllTheCats.Api.Features.Cats.ListCats;
@@ -16,7 +17,7 @@ public class ListCatsService(ICatRepository catRepository) : IListCatsService
         }
 
         int totalCount = await query.CountAsync();
-
+    
         List<CatDto> items = await query
             .OrderByDescending(c => c.Created)
             .Skip((page - 1) * pageSize)
@@ -26,7 +27,7 @@ public class ListCatsService(ICatRepository catRepository) : IListCatsService
                 c.CatId,
                 c.Width,
                 c.Height,
-                c.Image,
+                $"http://localhost:9001/browser/{Config.BUCKET_NAME}/{c.Image}",
                 c.CatTags.Select(ct => ct.Tag.Name).ToList(),
                 c.Created
             ))

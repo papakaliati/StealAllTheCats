@@ -1,14 +1,17 @@
 ﻿using Hangfire;
-using StealAllTheCats.External.TheCatApi.Models;
+using StealAllTheCats.Application.Interfaces;
 using StealAllTheCats.Infrastructure.Data.Repositories;
 using StealAllTheCats.Integrations.TheCatApi;
+using StealAllTheCats.Integrations.TheCatApi.Models;
+using System;
 
 namespace StealAllTheCats.Api.Features.Cats.Fetch;
 
 public class FetchCatsService(ICatApiClient catApiClient,
                               ICatRepository catRepository,
                               ITagRepository tagRepository,
-                              IFileDownloader fileDownloader, 
+                              IFileDownloader fileDownloader,
+                              IFileStorageService fileStorageService,
                               IBackgroundJobClient backgroundJobClient) : IFetchCatsService
 {
     public string EnqueueCatFetchJob()
@@ -25,24 +28,27 @@ public class FetchCatsService(ICatApiClient catApiClient,
         {
             if (await catRepository.ExistsAsync(apiCat.Id)) continue;
 
+
             byte[] imageBytes = await fileDownloader.DownloadFileAsync(apiCat.Url);
 
-            Task<CatApiResponse> catApiResponseTask = catApiClient.GetImageInfoByIdAsync(apiCat.Id);
-
             if (imageBytes == null || imageBytes.Length == 0) continue;
+
+            string contentType = await fileDownloader.GetContentType(apiCat.Url);
+            byte[] data = await fileDownloader.DownloadFileAsync(apiCat.Url);
+            bool wasUploaded = await fileStorageService.UploadImageAsync(data, apiCat.Id, contentType);
 
             CatEntity catEntity = new()
             {
                 CatId = apiCat.Id,
                 Width = apiCat.Width,
                 Height = apiCat.Height,
-                Image = imageBytes,
+                Image = apiCat.Id,
                 Created = DateTime.UtcNow
             };
 
             List<TagEntity> tags = [];
 
-            CatApiResponse catApiResponse = await catApiResponseTask;
+            CatApiResponse catApiResponse = await catApiClient.GetImageInfoByIdAsync(apiCat.Id);
 
             foreach (Breed breed in catApiResponse.Breeds)
             {

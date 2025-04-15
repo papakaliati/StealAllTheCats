@@ -1,5 +1,5 @@
 ﻿using Refit;
-using StealAllTheCats.External.TheCatApi.Models;
+using StealAllTheCats.Integrations.TheCatApi.Models;
 
 namespace StealAllTheCats.Integrations.TheCatApi;
 

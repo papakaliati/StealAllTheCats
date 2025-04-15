@@ -1,6 +1,7 @@
-﻿namespace StealAllTheCats.Application.Interfaces
+﻿namespace StealAllTheCats.Application.Interfaces;
+
+public interface IFileStorageService
 {
-    public class IFileStorageService
-    {
-    }
+    Task<bool> UploadImageAsync(byte[] imageBytes, string objectName, string contentType);
+    Task<byte[]> GetImageAsync(string objectName);
 }

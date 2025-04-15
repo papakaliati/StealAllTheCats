@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace StealAllTheCats.Api.Controllers;
+namespace StealAllTheCats.Api.Features.Jobs.GetbyID;
 
 [ApiController]
 [Route("api/jobs")]
