@@ -31,7 +31,8 @@ namespace StealAllTheCats.Persistence.Migrations
 
                     b.Property<string>("CatId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -78,7 +79,8 @@ namespace StealAllTheCats.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
