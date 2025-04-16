@@ -1,5 +1,4 @@
 # StealAllTheCats
-https://www.microsoft.com/en-us/sql-server
 A reference .NET application implementing StealAllTheCats Solution
 
 
